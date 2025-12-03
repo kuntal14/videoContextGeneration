@@ -4,6 +4,7 @@ import shutil
 import os
 import torch, csv
 from faster_whisper import WhisperModel
+from typing import List
 
 AUDIO_FOLDER = "audio"
 AUDIO_PATH = f"{AUDIO_FOLDER}/transcript_16k.wav"
@@ -107,8 +108,7 @@ def csv_to_srt(csv_path: Path, srt_path: Path,
             f.write(" ".join(b["words"]) + "\n\n")
     print(f"✅ SRT saved to {srt_path}")
     
-# get audio string
-from typing import List
+
 
 def csv_to_transcript(csv_path: str,
                       word_col: str = "word",
@@ -167,7 +167,7 @@ def csv_to_transcript(csv_path: str,
     # 2.4  Join with a space, then fix spacing around punctuation
     # ------------------------------------------------------------------
     #  a) simple space‑joined string
-    txt = " ".join(raw_words)
+    txt = "".join(raw_words)
 
     #  b) remove the space that appears *before* punctuation marks
     # #     (covers , . ! ? ; : )
@@ -184,7 +184,13 @@ def csv_to_transcript(csv_path: str,
 
     return txt
 
-if __name__ == "__main__":
-    video_path = Path.home()/ "Downloads" / "demo.mov"
+# execute the functions
+def execute(video_path):
     demux_audio(video_path)
     transcribe_audio()
+    csv_to_srt(CSV_PATH, SRT_PATH)
+    print("✅ Transcription complete ------ \n" + csv_to_transcript(CSV_PATH))
+
+if __name__ == "__main__":
+    video_path = Path.home()/ "Downloads" / "demo.mov"
+    execute(video_path)
