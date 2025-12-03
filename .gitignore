@@ -3,3 +3,6 @@ __pycache__/
 *.pyc
 keyframes/
 env/
+venv_311/
+audio/
+

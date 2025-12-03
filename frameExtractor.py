@@ -6,6 +6,7 @@ import cv2
 
 # Video Path
 video_file = "demo.mov"
+keyframes_folder_path = 'keyframes'
 video_path = "/Users/kuntalsuman/Downloads/demo.mov"
 keyframes_path = f'keyframes/{video_file}_keyframes.json'
 all_frames_path = 'keyframes/all_frames.json'
