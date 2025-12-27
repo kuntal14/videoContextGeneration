@@ -3,6 +3,9 @@ import json
 import os
 from pathlib import Path
 import cv2
+from static_ffmpeg import run
+ffmpeg, ffprobe = run.get_or_fetch_platform_executables_else_raise()
+print(f"FFprobe path: {ffprobe}")
 
 # Video Path
 video_file = "demo.mp4"
@@ -43,7 +46,7 @@ def extract_keyframe_offsets(video_path, video_file):
     
     # Use ffprobe to get packet information
     cmd = [
-        'ffprobe',
+        ffprobe,
         '-v', 'error',
         '-select_streams', 'v:0',  # Select first video stream
         '-show_entries', 'packet=pts_time,pos,flags,size',  # Get timestamp, position, flags, and size
@@ -53,6 +56,9 @@ def extract_keyframe_offsets(video_path, video_file):
     
     try:
         result = subprocess.run(cmd, capture_output = True, text = True, check = True)
+        if result.stderr:
+            print("ffprobe stderr:", result.stderr)
+        
         data = json.loads(result.stdout)
         
         keyframes = []
@@ -75,7 +81,10 @@ def extract_keyframe_offsets(video_path, video_file):
     
     except subprocess.CalledProcessError as e:
         print(f"Error running ffprobe: {e}")
-        print(f"stderr: {e.stderr}")
+        if e.stderr:
+            print(f"ffprobe stderr: {e.stderr}")
+        if e.stdout:
+            print(f"ffprobe stdout: {e.stdout}")
         raise
     except json.JSONDecodeError as e:
         print(f"Error parsing JSON output: {e}")
@@ -118,7 +127,7 @@ def get_all_frames(keyframes, video_path, video_file):
         elif i == len(keyframes) - 1:
             # find the duration of the video
             t0 = keyframes[i]['pts_time']
-            cmd = ['ffprobe', '-v', 'error', '-select_streams', 'v:0', '-show_entries', 'format=duration', '-of', 'default=noprint_wrappers=1:nokey=1', video_path]
+            cmd = [ffprobe, '-v', 'error', '-select_streams', 'v:0', '-show_entries', 'format=duration', '-of', 'default=noprint_wrappers=1:nokey=1', video_path]
             t1 = float(subprocess.check_output(cmd).decode('utf-8')) - 0.1
             t_inter_1 = t0 + (t1 - t0) / 3
             t_inter_2 = t0 + (2 * (t1 - t0)) / 3
@@ -192,8 +201,12 @@ def make_video_context_folder(video_path):
     else:
         print("video folder folder already exists")
 
-def execute(video_path = "/Users/kuntalsuman/Downloads/demo.mp4"):
+def execute(video_path = "C:/Users/Kuntal/Downloads/demo.mp4"):
     # verify_video_path(video_path)
+    if not os.path.exists(video_path):
+        print(f"ERROR: Video file not found at {video_path}")
+        return
+    
     # make a folder for the video
     video_file = Path(video_path).name
     images_folder = f'{context_folder_path}/{video_file}/images'
