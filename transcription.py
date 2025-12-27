@@ -6,13 +6,10 @@ import torch, csv
 from faster_whisper import WhisperModel
 from typing import List
 
-AUDIO_FOLDER = "audio"
-AUDIO_PATH = f"{AUDIO_FOLDER}/transcript_16k.wav"
-CSV_PATH = f"{AUDIO_FOLDER}/transcript_16k_word_ts.csv"
-SRT_PATH = f"{AUDIO_FOLDER}/transcript_16k_word_ts.srt"
+
 
 # function to demux audio
-def demux_audio(video_path):
+def demux_audio(video_path, AUDIO_FOLDER, AUDIO_PATH):
     # check if the audio folder exists, if so delete it
     if os.path.exists(AUDIO_FOLDER):
         shutil.rmtree(AUDIO_FOLDER)
@@ -29,7 +26,7 @@ def demux_audio(video_path):
         print(f"Error demuxing audio: {e}")
 
 # function to transcribe audio
-def transcribe_audio():
+def transcribe_audio(AUDIO_PATH, CSV_PATH):
     # set the variables
     MODEL_SIZE = "large-v2"
     DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
@@ -186,8 +183,13 @@ def csv_to_transcript(csv_path: str,
 
 # execute the functions
 def execute(video_path):
-    demux_audio(video_path)
-    transcribe_audio()
+    BASE_PATH = Path.home() / "context" / Path(video_path.name)
+    AUDIO_FOLDER = f"{BASE_PATH}/audio"
+    AUDIO_PATH = f"{AUDIO_FOLDER}/transcript_16k.wav"
+    CSV_PATH = f"{AUDIO_FOLDER}/transcript_16k_word_ts.csv"
+    SRT_PATH = f"{AUDIO_FOLDER}/transcript_16k_word_ts.srt"
+    demux_audio(video_path, AUDIO_FOLDER, AUDIO_PATH)
+    transcribe_audio(AUDIO_PATH, CSV_PATH)
     csv_to_srt(CSV_PATH, SRT_PATH)
     print("✅ Transcription complete ------ \n" + csv_to_transcript(CSV_PATH))
 

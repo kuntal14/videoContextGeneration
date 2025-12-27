@@ -8,11 +8,7 @@ from pathlib import Path
 keyframes_folder_path = fe.keyframes_folder_path
 
 def get_frames():
-    # check if the folder exists, if so delete it
-    if os.path.exists('keyframes'):
-        shutil.rmtree(keyframes_folder_path)
-
-    # # extract keyframes
+    # extract keyframes
     fe.execute()
 
 def get_transcript(video_path):

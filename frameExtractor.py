@@ -6,14 +6,23 @@ import cv2
 
 # Video Path
 video_file = "demo.mov"
-keyframes_folder_path = 'keyframes'
-video_path = "/Users/kuntalsuman/Downloads/demo.mov"
-keyframes_path = f'keyframes/{video_file}_keyframes.json'
-all_frames_path = 'keyframes/all_frames.json'
-images_path = 'keyframes/images'
+frames_folder_path = 'frames'
+HOME = Path.home()
+print(HOME)
+context_folder_path = f'{HOME}/context'
 
 # Verify the file exists
 def verify_video_path(video_path):
+    if not os.path.exists(context_folder_path):
+        os.makedirs(context_folder_path)
+    else:
+        print("Context folder already exists")
+
+    # create a folder with the video's name
+    video_folder_path = f'{context_folder_path}/{video_file}'
+    if not os.path.exists(video_folder_path):
+        os.makedirs(video_folder_path)  
+
     if not os.path.exists(video_path):
         raise FileNotFoundError(f"Video file not found: {video_path}")
 
@@ -21,13 +30,16 @@ def verify_video_path(video_path):
     print(f"File size: {os.path.getsize(video_path):,} bytes")
 
 # this will give you the keyframes and their data
-def extract_keyframe_offsets(video_path):
+def extract_keyframe_offsets(video_path, video_file):
     """
     Extract keyframe information including byte offsets from a video file.
     
     Returns:
         list: List of dictionaries containing keyframe metadata
     """
+
+    # 
+    
     # Use ffprobe to get packet information
     cmd = [
         'ffprobe',
@@ -39,7 +51,7 @@ def extract_keyframe_offsets(video_path):
     ]
     
     try:
-        result = subprocess.run(cmd, capture_output=True, text=True, check=True)
+        result = subprocess.run(cmd, capture_output = True, text = True, check = True)
         data = json.loads(result.stdout)
         
         keyframes = []
@@ -68,11 +80,15 @@ def extract_keyframe_offsets(video_path):
         print(f"Error parsing JSON output: {e}")
         raise
 
-# check if there is a keyframes folder, if not, the create one
+# check if there is a frames folder, if not, the create one
 
-def save_keyframes(keyframes):
-    if not os.path.exists('keyframes'):
-        os.makedirs('keyframes')
+def save_keyframes(keyframes, video_file):
+    # add keyframes path
+    frames_folder_path = f'{context_folder_path}/{video_file}/frames'
+    keyframes_path = f'{context_folder_path}/{video_file}/frames/keyframes.json'
+
+    if not os.path.exists(frames_folder_path):
+        os.makedirs(frames_folder_path)
 
         # check if it has the keyframes file for this video file
         if os.path.exists(keyframes_path):
@@ -83,7 +99,7 @@ def save_keyframes(keyframes):
             with open(keyframes_path, 'w') as f:
                 json.dump(keyframes, f)
     else:
-        if os.path.exists(f'keyframes/{video_file}_keyframes.json'):
+        if os.path.exists(keyframes_path):
             print(f"Keyframes file already exists for {video_file}")
             with open(keyframes_path, 'w') as f:
                 json.dump(keyframes, f)
@@ -92,8 +108,9 @@ def save_keyframes(keyframes):
                 json.dump(keyframes, f)
 
 # we need 2 more intermediate frames in between the keyframes for more context
-def get_all_frames(keyframes):
+def get_all_frames(keyframes, video_path, video_file):
     all_frames = []
+    all_frames_path = f'{context_folder_path}/{video_file}/frames/all_frames.json'
     for i in range(len(keyframes)):
         if i == 0:
             all_frames.append(f"{keyframes[i]['pts_time']:.2f}")
@@ -124,15 +141,15 @@ def get_all_frames(keyframes):
         print("saved all frames")
 
 # make images folder
-def make_images_folder():
-    if not os.path.exists('keyframes/images'):
-        os.makedirs('keyframes/images')
+def make_images_folder(images_folder):
+    if not os.path.exists(images_folder):
+        os.makedirs(images_folder)
         print("made the images folder")
     else:
         print("images folder already exists")
 
 # extract images
-def extract_frames():
+def extract_frames(video_path, all_frames_path, images_path):
     # Open the video file once
     cap = cv2.VideoCapture(video_path)
     if not cap.isOpened():
@@ -166,14 +183,26 @@ def extract_frames():
     cap.release()
     print("Frame extraction complete.")
 
+def make_video_context_folder(video_path):
+    file_name = Path(video_path).name
+    video_folder = f'{context_folder_path}/{file_name}'
+    if not os.path.exists(video_folder):
+        os.makedirs(video_folder)
+    else:
+        print("video folder folder already exists")
 
-def execute():
-    verify_video_path(video_path)
-    keyframes = extract_keyframe_offsets(video_path)
-    save_keyframes(keyframes)
-    get_all_frames(keyframes)
-    make_images_folder()
-    extract_frames()
+def execute(video_path = "/Users/kuntalsuman/Downloads/demo.mov"):
+    # verify_video_path(video_path)
+    # make a folder for the video
+    video_file = Path(video_path).name
+    images_folder = f'{context_folder_path}/{video_file}/images'
+    all_frames_path = f'{context_folder_path}/{video_file}/frames/all_frames.json'
+    make_video_context_folder(video_path)
+    keyframes = extract_keyframe_offsets(video_path, video_file)
+    save_keyframes(keyframes, video_file)
+    get_all_frames(keyframes, video_path, video_file)
+    make_images_folder(images_folder)
+    extract_frames(video_path, all_frames_path, images_folder)
 
 if __name__ == "__main__":
     execute()
