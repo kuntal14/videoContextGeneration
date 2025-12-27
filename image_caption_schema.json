@@ -37,5 +37,12 @@
     },
     "general": {
         "description": "general description of the image"
+    },
+    "audio": {
+        "description": "Is the subject in the camera a living thing speaking, or is it being decribed by a narrator?"
+    },
+    "transcription": {
+        "transcription": "add the transcription that is given to you here",
+        "language": "add the language that is given to you here"
     }
 }

@@ -194,5 +194,5 @@ def execute(video_path):
     print("✅ Transcription complete ------ \n" + csv_to_transcript(CSV_PATH))
 
 if __name__ == "__main__":
-    video_path = Path.home()/ "Downloads" / "demo.mov"
+    video_path = Path.home()/ "Downloads" / "demo.mp4"
     execute(video_path)

@@ -28,7 +28,7 @@ def process_video_images(video_file, caption_path):
         return
 
     # process all the images
-    for i in range(0,len(images)):
+    for i in range(0,5):
         image_file = images[i]
         image_path = os.path.abspath(os.path.join(images_folder_path, image_file))
         if not os.path.exists(image_path):
@@ -49,35 +49,35 @@ def process_video_images(video_file, caption_path):
             "Return ONLY the populated JSON object."
         )
 
-        try:
-            resp = ollama.chat(
-                model="gemma3:4b",
-                messages=[
-                    {
-                        "role": "user",
-                        "content": prompt,
-                        "images": [image_path]
-                    }
-                ],
-                format="json",
-                options={
-                    "temperature": 0.2,
-                    "num_ctx": 4096
-                }
-            )
+        # try:
+        #     resp = ollama.chat(
+        #         model="gemma3:4b",
+        #         messages=[
+        #             {
+        #                 "role": "user",
+        #                 "content": prompt,
+        #                 "images": [image_path]
+        #             }
+        #         ],
+        #         format="json",
+        #         options={
+        #             "temperature": 0.2,
+        #             "num_ctx": 4096
+        #         }
+        #     )
 
-            content = resp["message"]["content"]
-            print("\n=== Answer ===")
-            print(content)
+        #     content = resp["message"]["content"]
+        #     print("\n=== Answer ===")
+        #     print(content)
             
-            if content.strip() == "{}":
-                print("⚠️ Warning: Ollama returned an empty JSON object. Check model/image.")
+        #     if content.strip() == "{}":
+        #         print("⚠️ Warning: Ollama returned an empty JSON object. Check model/image.")
             
-            # Save the result
-            newEntry(image_file, caption_path, content)
+        #     # Save the result
+        #     newEntry(image_file, caption_path, content)
 
-        except Exception as e:
-            print(f"Error calling Ollama: {e}")
+        # except Exception as e:
+        #     print(f"Error calling Ollama: {e}")
 
 def get_transcript(video_file, image_file):
     csv_path = f'{CONTEXT_FOLDER_PATH}/{video_file}/audio/transcript_16k_word_ts.csv'
