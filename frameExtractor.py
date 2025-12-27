@@ -5,11 +5,12 @@ from pathlib import Path
 import cv2
 
 # Video Path
-video_file = "demo.mov"
+video_file = "demo.mp4"
 frames_folder_path = 'frames'
 HOME = Path.home()
 print(HOME)
 context_folder_path = f'{HOME}/context'
+print("Context folder path:", context_folder_path)
 
 # Verify the file exists
 def verify_video_path(video_path):
@@ -191,7 +192,7 @@ def make_video_context_folder(video_path):
     else:
         print("video folder folder already exists")
 
-def execute(video_path = "/Users/kuntalsuman/Downloads/demo.mov"):
+def execute(video_path = "/Users/kuntalsuman/Downloads/demo.mp4"):
     # verify_video_path(video_path)
     # make a folder for the video
     video_file = Path(video_path).name

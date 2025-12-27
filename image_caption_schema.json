@@ -1,137 +1,41 @@
 {
     "scene": {
-        "type": "object",
-        "required": [
-            "type",
-            "location"
-        ],
-        "properties": {
-            "type": {
-                "type": "string",
-                "enum": [
-                    "indoor",
-                    "outdoor",
-                    "mixed",
-                    "unknown"
-                ]
-            },
-            "location": {
-                "type": "string"
-            },
-            "weather": {
-                "type": "string",
-                "default": "none"
-            },
-            "time_of_day": {
-                "type": "string",
-                "default": "unknown"
-            }
-        }
+        "type": "indoor/outdoor/mixed/unknown",
+        "location": "specific location description",
+        "weather": "none/sunny/rainy/etc",
+        "time_of_day": "morning/day/night/unknown"
     },
     "objects": {
-        "items": {
-            "name": "string",
-            "properties": {
-                "description": "string explaining the object and its properties"
-            }
-        }
-    },
-    "people": {
-        "type": "array",
-        "items": {
-            "type": "name",
-            "properties": {
-                "gender": {
-                    "type": "string",
-                    "enum": [
-                        "male",
-                        "female"
-                    ]
-                },
-                "expression": {
-                    "type": "string",
-                    "enum": [
-                        "neutral",
-                        "happy",
-                        "sad",
-                        "focused",
-                        "angry",
-                        "surprised",
-                        "unknown"
-                    ]
+        "items": [
+            {
+                "name": "object name",
+                "properties": {
+                    "description": "description of the object"
                 }
             }
-        }
+        ]
     },
-    "actions": {
-        "type": "array",
-        "items": {
-            "type": "string",
-            "required": [
-                "verb",
-                "subject"
-            ],
-            "properties": {
-                "verb": {
-                    "type": "string"
-                },
-                "subject": {
-                    "type": "string"
-                },
-                "object": {
-                    "type": [
-                        "string",
-                        "null"
-                    ]
-                }
-            }
+    "people": [
+        {
+            "gender": "male/female/unknown",
+            "expression": "neutral/happy/sad/focused/etc"
         }
-    },
+    ],
+    "actions": [
+        {
+            "verb": "action verb",
+            "subject": "who is doing it",
+            "object": "what they are doing it to"
+        }
+    ],
     "emotion": {
-        "type": "object",
-        "required": [
-            "overall"
-        ],
-        "properties": {
-            "overall": {
-                "type": "string",
-                "enum": [
-                    "neutral",
-                    "happy",
-                    "sad",
-                    "focused",
-                    "angry",
-                    "surprised",
-                    "unknown"
-                ]
-            }
-        }
+        "overall": "neutral/happy/sad/etc"
     },
     "lighting": {
-        "type": "object",
-        "required": [
-            "type",
-            "intensity"
-        ],
-        "properties": {
-            "type": {
-                "type": "string",
-                "enum": [
-                    "soft",
-                    "hard",
-                    "mixed",
-                    "unknown"
-                ]
-            },
-            "intensity": {
-                "type": "string",
-                "enum": [
-                    "low",
-                    "medium",
-                    "high",
-                    "unknown"
-                ]
-            }
-        }
+        "type": "soft/hard/mixed/unknown",
+        "intensity": "low/medium/high/unknown"
+    },
+    "general": {
+        "description": "general description of the image"
     }
 }
