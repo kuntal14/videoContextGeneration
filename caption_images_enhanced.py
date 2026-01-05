@@ -38,23 +38,27 @@ def process_single_image(image_file, video_file, caption_path, global_context_te
         transcript = get_transcript(video_file, image_file)
         
         # Identity-focused instructions
-        prompt = f""" this ahead is a general overview of what is happening in the video, you can use this to ground your description of the image <video context>{global_context_text}</video context>
-Current Timestamp: {timestamp:.2f}s
-Transcript Context: "{transcript}"
+        # Enhanced synthesis prompt
+        prompt = f"""You are analyzing a video frame with accompanying audio context.
+### GLOBAL VIDEO CONTEXT (Use for identification)
+{global_context_text}
 
-TASK: Describe this frame.
-RULES:
-1. If there is a person on the screen,Identify the person on screen using the Global Context.
-2. If the person is identified and the transcript shows them speaking, they are NOT a narrator. They are the SPEAKER on screen.
-3. Be concise.
-4. If it is talking about a place then be mindful of that.
-5. just describe what the image is showing.
+### LOCAL CONTEXT
+Timestamp: {timestamp:.2f}s
+Audio/Transcript: "{transcript}"
+
+TASK: Provide a cohesive description of this moment.
+INSTRUCTIONS:
+1. VISUAL: Describe the image in detail (scenery, objects, atmosphere).
+2. AUDIO: If the transcript shows someone speaking, identify them using Global Context.
+3. SYNTHESIS: If the speaker is NOT in the frame, describe them as "speaking off-camera" or "narrating over the scene".
+4. IDENTITY: Do not just say "a man"; use names from Global Context if they match the transcript or appearance.
 
 Return ONLY this JSON:
 {{
-  "description": "Rich paragraph of what's happening, completely describe what the image given to you is showing",
-  "entities": ["names of people/objects"],
-  "actions": ["what is happening"]
+  "description": "A paragraph describing the visual scene AND how the audio/transcript relates to it ",
+  "entities": ["names of visible people", "identified off-camera speakers", "key objects"],
+  "actions": ["visual actions", "speech or narration"]
 }}
 """
         
