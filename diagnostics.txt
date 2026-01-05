@@ -1,0 +1,21 @@
+============================================================
+VIDEO CAPTIONING DIAGNOSTICS
+============================================================
+
+============================================================
+IMAGE FILENAME DIAGNOSTICS
+============================================================
+
+Total images: 71
+✅ All filenames have valid timestamps
+   Range: 0.00s to 59.96s
+   Sample files: ['0.00.jpg', '1.38.jpg', '1.99.jpg']
+
+============================================================
+CAPTION FOLDER DIAGNOSTICS
+============================================================
+
+Total caption files: 71
+  Valid captions: 68
+  Empty captions: 0
+  Error captions: 3
