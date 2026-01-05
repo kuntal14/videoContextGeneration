@@ -195,4 +195,5 @@ def execute(video_path):
 
 if __name__ == "__main__":
     video_path = Path.home()/ "Downloads" / "demo.mp4"
+    print(video_path)
     execute(video_path)

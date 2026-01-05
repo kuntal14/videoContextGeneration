@@ -95,3 +95,5 @@ wheel==0.45.1
 yarl==1.22.0
 opencv-python
 static-ffmpeg
+ollama
+faster-whisper
